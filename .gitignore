@@ -1,0 +1,66 @@
+# Environment (CRITICAL - 절대 커밋 금지)
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-*
+
+# Vercel
+.vercel/
+
+# Node
+node_modules/
+package-lock.json
+
+# Backups
+*_backup.*
+fund_backup.html
+
+# Docs (dev only)
+docs/
+
+# Claude
+.claude/
+NEXT_SESSION*.md
+BRAND_INFO.md
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temp
+*.tmp
+*.temp
+
+# Wrangler state (any depth)
+**/.wrangler/**
+.wrangler/
+
+# Design source files
+*.psd
+*.ai
+*.sketch
+
+# Large/unnecessary files
+images/board/sora_raw/
+
+# Korean filename source files (root only)
+/logo*.png
+!/images/logo*.png
+프로필*.psd
+프로필*.jpg
+프로필*.png
+화이트로고*.psd
+화이트로고*.png
+logo 복사.png
