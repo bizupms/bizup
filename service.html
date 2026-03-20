@@ -1108,25 +1108,25 @@
       }
 
       .expert-network-section .service-items {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        display: flex;
+        flex-wrap: wrap;
         gap: 8px;
-        justify-items: center;
+        justify-content: center;
       }
 
       .expert-network-section .service-tag {
         background-color: #edf2f7;
         border: 1px solid #e5eaf0;
-        padding: 8px 12px;
+        padding: 8px 16px;
         border-radius: 18px;
         font-size: 14px;
         color: #3d5168;
         transition: all 0.2s ease;
-        width: 150px;
         text-align: center;
-        display: flex;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
+        white-space: nowrap;
         min-height: 36px;
       }
 
@@ -1306,11 +1306,10 @@
 
         .expert-network-section .service-items {
           gap: 6px;
-          justify-items: stretch;
+          justify-content: center;
         }
 
         .expert-network-section .service-tag {
-          width: 100%;
           padding: 6px 12px;
           font-size: 12px;
           min-height: 32px;
