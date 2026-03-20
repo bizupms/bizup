@@ -420,7 +420,7 @@ async function handleLeadsAPI(request, env, path) {
   // GET /leads
   if (method === "GET" && path === "/leads") {
     try {
-      const sortField = encodeURIComponent("Date");
+      const sortField = encodeURIComponent("date");
       const airtableUrl = `https://api.airtable.com/v0/${env.AIRTABLE_BASE_ID}/${env.AIRTABLE_TABLE_ID}?sort[0][field]=${sortField}&sort[0][direction]=desc`;
       const airtableResponse = await fetch(airtableUrl, {
         headers: { Authorization: `Bearer ${env.AIRTABLE_TOKEN}` },
@@ -438,27 +438,30 @@ async function handleLeadsAPI(request, env, path) {
       }
 
       const result = await airtableResponse.json();
-      const leads = result.records.map((record) => ({
-        id: record.id,
-        createdTime: record.createdTime,
-        Company: record.fields["Company"],
-        BizNo: record.fields["BizNo"],
-        Name: record.fields["Name"],
-        Phone: record.fields["Phone"],
-        Email: record.fields["Email"],
-        Region: record.fields["Region"],
-        Industry: record.fields["Industry"],
-        Founded: record.fields["Founded"],
-        Revenue: record.fields["Revenue"],
-        CallTime: record.fields["CallTime"],
-        Amount: record.fields["Amount"],
-        FundType: record.fields["FundType"],
-        Message: record.fields["Message"],
-        Date: record.fields["Date"],
-        Time: record.fields["Time"],
-        Status: record.fields["Status"] || "신규",
-        Memo: record.fields["Memo"] || "",
-      }));
+      const leads = result.records.map((record) => {
+        const f = record.fields;
+        return {
+          id: record.id,
+          createdTime: record.createdTime,
+          Company: f["company"] || f["Company"] || "",
+          BizNo: f["BizNo"] || "",
+          Name: f["Name"] || "",
+          Phone: f["phone"] || f["Phone"] || "",
+          Email: f["email"] || f["Email"] || "",
+          Region: f["Region"] || "",
+          Industry: f["Industry"] || "",
+          Founded: f["Founded"] || "",
+          Revenue: f["Revenue"] || "",
+          CallTime: f["CallTime"] || "",
+          Amount: f["amount"] || f["Amount"] || "",
+          FundType: f["fundType"] || f["FundType"] || "",
+          Message: f["message"] || f["Message"] || "",
+          Date: f["date"] || f["Date"] || "",
+          Time: f["Time"] || "",
+          Status: f["status"] || f["Status"] || "신규",
+          Memo: f["Memo"] || "",
+        };
+      });
 
       return new Response(JSON.stringify({ success: true, leads }), {
         headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
