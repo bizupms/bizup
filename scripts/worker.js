@@ -681,13 +681,14 @@ async function handleBoardAPI(request, env, path) {
     try {
       const data = await request.json();
       const fields = {
-        title: data.제목 || "",
-        content: data.내용 || "",
-        summary: data.요약 || "",
-        category: data.카테고리 || "",
-        tags: data.태그 || "",
-        thumbnailUrl: data.썸네일URL || "",
-        date: data.작성일 || formatDateKST(new Date()),
+        title: data.제목 || data.title || "",
+        content: data.내용 || data.content || "",
+        summary: data.요약 || data.summary || "",
+        category: data.카테고리 || data.category || "",
+        tags: data.태그 || data.tags || "",
+        thumbnailUrl: data.썸네일URL || data.thumbnailUrl || "",
+        slug: data.slug || "",
+        date: data.작성일 || data.date || formatDateKST(new Date()),
         isPublic: data.게시여부 !== false,
       };
 

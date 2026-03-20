@@ -66,3 +66,7 @@ images/board/sora_raw/
 logo 복사.png
 
 .vercel
+
+# Google Service Account key
+scripts/bizup-gmail-sa.json
+*.json.key
