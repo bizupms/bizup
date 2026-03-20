@@ -1,10 +1,9 @@
 name = "bizup"
 main = "worker.js"
 compatibility_date = "2024-01-01"
-account_id = "dda30f9c90982d079ef3ec76921f7d84"
+account_id = "a9a1501bb02cffc50bcc8f9fabba684a"
 
-# Worker URL: TODO - update after deploying bizup worker
-# Worker URL (old): https://infinite.gangang901.workers.dev
+# Worker URL: https://bizup.bizupms.workers.dev
 
 # 매일 09:00 KST (00:00 UTC) — 전날 방문통계 수집 + 텔레그램 리포트
 [triggers]
@@ -15,10 +14,10 @@ crons = ["0 0 * * *"]
 # KV 바인딩 (OTP 인증용)
 [[kv_namespaces]]
 binding = "OTP_KV"
-id = "29eae5031c28485cb62559749ae2b424"
+id = "203a310c04d745bd9f906321a4697eee"
 
 # R2 버킷 바인딩 (이미지 업로드용)
-# Public URL: https://pub-d4f7fa5a4cb648d48f34274fcba1d283.r2.dev
+# Public URL: https://pub-db75636e58d548ab90dfe43ebe69ae7b.r2.dev
 [[r2_buckets]]
 binding = "BUCKET"
 bucket_name = "bizup-r2"

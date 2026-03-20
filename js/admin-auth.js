@@ -1,6 +1,6 @@
 // BIZUP 관리자 인증 모듈 (텔레그램 OTP)
 const AUTH_KEY = "bizup_admin_auth";
-const WORKER_URL = ""; // TODO: Worker URL 설정 필요
+const WORKER_URL = "https://bizup.bizupms.workers.dev";
 
 // 페이지 콘텐츠 즉시 숨김 (렌더링 전 실행)
 document.documentElement.style.visibility = "hidden";

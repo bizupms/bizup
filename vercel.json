@@ -1,3 +1,10 @@
 {
-  "buildCommand": "node build.cjs"
+  "buildCommand": "node build.cjs",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "admin.bizupms.com" }],
+      "destination": "/admin/$1"
+    }
+  ]
 }
