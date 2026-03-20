@@ -3737,9 +3737,11 @@
 
       .bizup-wizard-buttons {
         display: flex;
-        gap: 12px;
+        gap: 10px;
         justify-content: flex-end;
+        align-items: center;
         margin-top: 24px;
+        flex-wrap: nowrap;
       }
       .bizup-wizard-btn {
         padding: 12px 28px;
@@ -3749,6 +3751,8 @@
         cursor: pointer;
         border: none;
         transition: all 0.2s;
+        white-space: nowrap;
+        flex-shrink: 0;
       }
       .bizup-wizard-btn-prev {
         background: #f5f5f5;
@@ -3783,6 +3787,7 @@
         box-shadow: 0 4px 12px rgba(20, 61, 97, 0.3);
         width: 100%;
         margin-top: 8px;
+        white-space: nowrap;
       }
       .bizup-wizard-submit-button:hover {
         background: #d06a22;

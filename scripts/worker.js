@@ -195,22 +195,22 @@ async function handleSubmit(request, env) {
     try {
       const rawFields = data.airtableFields || {};
       const fieldMap = {
-        기업명: "Company",
+        기업명: "company",
         사업자번호: "BizNo",
         대표자명: "Name",
-        연락처: "Phone",
-        이메일: "Email",
+        연락처: "phone",
+        이메일: "email",
         지역: "Region",
         업종: "Industry",
         설립연도: "Founded",
         직전년도매출: "Revenue",
         통화가능시간: "CallTime",
-        필요자금규모: "Amount",
-        자금종류: "FundType",
-        문의사항: "Message",
-        접수일: "Date",
+        필요자금규모: "amount",
+        자금종류: "fundType",
+        문의사항: "message",
+        접수일: "date",
         접수시간: "Time",
-        상태: "Status",
+        상태: "status",
         메모: "Memo",
       };
 
@@ -225,13 +225,13 @@ async function handleSubmit(request, env) {
         }
       }
 
-      if (fields["FundType"]) {
-        fields["FundType"] = Array.isArray(fields["FundType"])
-          ? fields["FundType"].join(", ")
-          : fields["FundType"];
+      if (fields["fundType"]) {
+        fields["fundType"] = Array.isArray(fields["fundType"])
+          ? fields["fundType"].join(", ")
+          : fields["fundType"];
       }
 
-      fields["Date"] = submitDate;
+      fields["date"] = submitDate;
       fields["Time"] = submitTime;
 
       const airtableResponse = await fetch(
