@@ -281,7 +281,7 @@ async function handleSubmit(request, env) {
       if (data.customerEmail && data.customerHtml) {
         try {
           await sendGmail(env, accessToken, {
-            from: data.emailFrom || "BIZUP <noreply@bizupms.com>",
+            from: data.emailFrom || "비즈업 기업지원센터 <bizupms@gmail.com>",
             to: data.customerEmail,
             subject:
               data.customerSubject || "[BIZUP] 무료진단 신청이 접수되었습니다",
@@ -305,7 +305,7 @@ async function handleSubmit(request, env) {
         try {
           for (const staffEmail of staffEmails) {
             await sendGmail(env, accessToken, {
-              from: data.emailFrom || "BIZUP <noreply@bizupms.com>",
+              from: data.emailFrom || "비즈업 기업지원센터 <bizupms@gmail.com>",
               to: staffEmail,
               subject: data.staffSubject || "[BIZUP] 신규 무료진단 접수",
               html: data.staffHtml,
@@ -2007,7 +2007,7 @@ export default {
           }
           const accessToken = await getGmailAccessToken(env);
           const result = await sendGmail(env, accessToken, {
-            from: from || "비즈업 <noreply@mail.policy-fund.online>",
+            from: from || "비즈업 기업지원센터 <bizupms@gmail.com>",
             to,
             subject,
             html,
