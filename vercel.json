@@ -1,11 +1,15 @@
 {
   "buildCommand": "node build.cjs",
-  "redirects": [
+  "rewrites": [
     {
-      "source": "/:path((?!admin/).*)",
+      "source": "/",
       "has": [{ "type": "host", "value": "admin.bizupms.com" }],
-      "destination": "/admin/:path",
-      "permanent": false
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "admin.bizupms.com" }],
+      "destination": "/admin/:path*"
     }
   ]
 }
