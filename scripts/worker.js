@@ -577,7 +577,7 @@ async function handleLeadsAPI(request, env, path) {
 // 게시판 API
 // ================================================
 
-async function handleBoardAPI(request, env, path) {
+async function handleBoardAPI(request, env, path, ctx) {
   const method = request.method;
 
   // GET /board or /posts
@@ -915,6 +915,7 @@ async function handleBoardAPI(request, env, path) {
         });
       }
 
+      const currentViews = record.fields["views"] || 0;
       const post = {
         id: record.id,
         title: record.fields["title"] || "",
@@ -927,10 +928,24 @@ async function handleBoardAPI(request, env, path) {
         thumbnail: record.fields["thumbnailUrl"] || "",
         tags: record.fields["tags"] || record.fields["tag"] || "",
         date: record.fields["date"] || "",
-        views: record.fields["views"] || 0,
+        views: currentViews + 1,
         isPublic: record.fields["isPublic"] || false,
         slug: record.fields["slug"] || "",
       };
+
+      // 조회수 +1 비동기 업데이트 (응답 지연 방지)
+      const viewsUpdate = fetch(
+        `https://api.airtable.com/v0/${env.AIRTABLE_BASE_ID}/board2/${record.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${env.AIRTABLE_TOKEN}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ fields: { views: currentViews + 1 } }),
+        },
+      ).catch(() => {});
+      if (ctx && ctx.waitUntil) ctx.waitUntil(viewsUpdate);
 
       return new Response(JSON.stringify({ post }), {
         headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
@@ -1937,7 +1952,7 @@ async function getStoredHistory(env, days) {
 // ================================================
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     if (request.method === "OPTIONS") {
       return new Response(null, { headers: CORS_HEADERS });
     }
@@ -2336,7 +2351,7 @@ export default {
         path === "/posts" ||
         path.startsWith("/posts/")
       ) {
-        return await handleBoardAPI(request, env, path);
+        return await handleBoardAPI(request, env, path, ctx);
       }
 
       // 팝업
