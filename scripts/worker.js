@@ -1614,7 +1614,7 @@ async function handleAnalyticsAPI(request, env, url, path) {
 // 일별통계 수집 + Airtable 저장 + 텔레그램 리포트
 // ================================================
 
-const STATS_TABLE = encodeURIComponent("일별통계");
+const STATS_TABLE = "tblD17hoLaWiqoCTb";
 
 function getYesterdayKST() {
   const now = new Date(Date.now() + 9 * 60 * 60 * 1000);
@@ -1711,38 +1711,41 @@ async function collectAndSaveDailyAnalytics(env, overrideDate) {
   // 당일 접수건 조회
   let dailyLeads = [];
   try {
-    const leadsFilter = encodeURIComponent(`{Date}='${targetDate}'`);
+    const leadsFilter = encodeURIComponent(`{date}='${targetDate}'`);
     const leadsRes = await fetch(
       `https://api.airtable.com/v0/${env.AIRTABLE_BASE_ID}/${env.AIRTABLE_TABLE_ID}?filterByFormula=${leadsFilter}&sort[0][field]=Time&sort[0][direction]=asc`,
       { headers: { Authorization: `Bearer ${env.AIRTABLE_TOKEN}` } },
     );
     const leadsData = await leadsRes.json();
-    dailyLeads = (leadsData.records || []).map((r) => ({
-      company: r.fields["Company"] || "-",
-      name: r.fields["Name"] || "-",
-      phone: r.fields["Phone"] || "-",
-      time: r.fields["Time"] || "-",
-      status: r.fields["Status"] || "신규",
-    }));
+    dailyLeads = (leadsData.records || []).map((r) => {
+      const f = r.fields;
+      return {
+        company: f["company"] || f["Company"] || "-",
+        name: f["Name"] || "-",
+        phone: f["phone"] || f["Phone"] || "-",
+        time: f["Time"] || "-",
+        status: f["status"] || f["Status"] || "신규",
+      };
+    });
   } catch (e) {
     console.error("접수건 조회 실패:", e.message);
   }
 
   // Airtable upsert
   const fields = {
-    날짜: targetDate,
-    방문자: visitors,
-    페이지뷰: pageViews,
-    세션: sessions,
-    신규방문자: newUsers,
-    평균체류초: avgDuration,
-    이탈률: bounceRate,
-    트래픽소스: JSON.stringify(trafficArr),
-    상위페이지: JSON.stringify(pagesArr),
-    기기분포: JSON.stringify(deviceArr),
+    date: targetDate,
+    visitors: visitors,
+    pageviews: pageViews,
+    sessions: sessions,
+    newUsers: newUsers,
+    avgDuration: avgDuration,
+    bounceRate: bounceRate,
+    trafficSources: JSON.stringify(trafficArr),
+    topPages: JSON.stringify(pagesArr),
+    deviceBreakdown: JSON.stringify(deviceArr),
   };
 
-  const filterFormula = encodeURIComponent(`{날짜}='${targetDate}'`);
+  const filterFormula = encodeURIComponent(`{date}='${targetDate}'`);
   const checkRes = await fetch(
     `https://api.airtable.com/v0/${env.AIRTABLE_BASE_ID}/${STATS_TABLE}?filterByFormula=${filterFormula}`,
     { headers: { Authorization: `Bearer ${env.AIRTABLE_TOKEN}` } },
@@ -1871,7 +1874,7 @@ async function sendDailyTelegramReport(env, data) {
 // Airtable에서 저장된 히스토리 조회
 async function getStoredHistory(env, days) {
   const startDate = daysAgoDate(days);
-  const sortField = encodeURIComponent("날짜");
+  const sortField = "date";
   const res = await fetch(
     `https://api.airtable.com/v0/${env.AIRTABLE_BASE_ID}/${STATS_TABLE}?sort[0][field]=${sortField}&sort[0][direction]=asc`,
     { headers: { Authorization: `Bearer ${env.AIRTABLE_TOKEN}` } },
@@ -1880,24 +1883,24 @@ async function getStoredHistory(env, days) {
   if (data.error) throw new Error(JSON.stringify(data.error));
   return (data.records || [])
     .filter((r) => {
-      const d = r.fields["날짜"];
+      const d = r.fields["date"];
       return d && d >= startDate;
     })
     .map((r) => ({
-      date: (r.fields["날짜"] || "").replace(/-/g, ""),
-      visitors: r.fields["방문자"] || 0,
-      pageViews: r.fields["페이지뷰"] || 0,
-      sessions: r.fields["세션"] || 0,
-      newUsers: r.fields["신규방문자"] || 0,
-      avgDuration: r.fields["평균체류초"] || 0,
-      bounceRate: r.fields["이탈률"] || 0,
-      trafficSources: r.fields["트래픽소스"]
-        ? JSON.parse(r.fields["트래픽소스"])
+      date: (r.fields["date"] || "").replace(/-/g, ""),
+      visitors: r.fields["visitors"] || 0,
+      pageViews: r.fields["pageviews"] || 0,
+      sessions: r.fields["sessions"] || 0,
+      newUsers: r.fields["newUsers"] || 0,
+      avgDuration: r.fields["avgDuration"] || 0,
+      bounceRate: r.fields["bounceRate"] || 0,
+      trafficSources: r.fields["trafficSources"]
+        ? JSON.parse(r.fields["trafficSources"])
         : [],
-      topPages: r.fields["상위페이지"]
-        ? JSON.parse(r.fields["상위페이지"])
+      topPages: r.fields["topPages"] ? JSON.parse(r.fields["topPages"]) : [],
+      devices: r.fields["deviceBreakdown"]
+        ? JSON.parse(r.fields["deviceBreakdown"])
         : [],
-      devices: r.fields["기기분포"] ? JSON.parse(r.fields["기기분포"]) : [],
     }));
 }
 
