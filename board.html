@@ -1292,7 +1292,7 @@
         container.innerHTML = posts
           .map((post) => {
             const postUrl = post.slug
-              ? `/marketing-news/${post.slug}`
+              ? `post.html?slug=${post.slug}`
               : `post.html?id=${post.id}`;
 
             const dateStr = formatDate(post.date);

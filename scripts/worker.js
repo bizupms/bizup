@@ -877,16 +877,44 @@ async function handleBoardAPI(request, env, path) {
     }
   }
 
-  // GET /posts/:id
+  // GET /posts/:idOrSlug — record ID(rec로 시작) 또는 slug로 조회
   if (method === "GET" && path.startsWith("/posts/")) {
     try {
-      const recordId = path.replace("/posts/", "");
-      const airtableResponse = await fetch(
-        `https://api.airtable.com/v0/${env.AIRTABLE_BASE_ID}/board2/${recordId}`,
-        { headers: { Authorization: `Bearer ${env.AIRTABLE_TOKEN}` } },
-      );
+      const param = decodeURIComponent(path.replace("/posts/", ""));
+      let record;
 
-      const record = await airtableResponse.json();
+      if (param.startsWith("rec")) {
+        // Airtable record ID로 직접 조회
+        const airtableResponse = await fetch(
+          `https://api.airtable.com/v0/${env.AIRTABLE_BASE_ID}/board2/${param}`,
+          { headers: { Authorization: `Bearer ${env.AIRTABLE_TOKEN}` } },
+        );
+        record = await airtableResponse.json();
+      } else {
+        // slug로 조회 (filterByFormula)
+        const formula = encodeURIComponent(`{slug}="${param}"`);
+        const airtableResponse = await fetch(
+          `https://api.airtable.com/v0/${env.AIRTABLE_BASE_ID}/board2?filterByFormula=${formula}&maxRecords=1`,
+          { headers: { Authorization: `Bearer ${env.AIRTABLE_TOKEN}` } },
+        );
+        const data = await airtableResponse.json();
+        if (data.records && data.records.length > 0) {
+          record = data.records[0];
+        } else {
+          return new Response(JSON.stringify({ error: "Post not found" }), {
+            status: 404,
+            headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+          });
+        }
+      }
+
+      if (!record || !record.fields) {
+        return new Response(JSON.stringify({ error: "Post not found" }), {
+          status: 404,
+          headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+        });
+      }
+
       const post = {
         id: record.id,
         title: record.fields["title"] || "",

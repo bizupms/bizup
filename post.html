@@ -1770,20 +1770,25 @@
         async function loadPost() {
           const urlParams = new URLSearchParams(window.location.search);
           const postId = urlParams.get("id");
+          const postSlug = urlParams.get("slug");
+          const lookupKey = postId || postSlug;
           currentPostId = postId;
 
-          if (!postId) {
+          if (!lookupKey) {
             showError();
             return;
           }
 
           try {
-            const response = await fetch(`${WORKER_URL}/posts/${postId}`);
+            const response = await fetch(
+              `${WORKER_URL}/posts/${encodeURIComponent(lookupKey)}`,
+            );
             const data = await response.json();
 
             if (data.post) {
+              currentPostId = data.post.id;
               displayPost(data.post);
-              loadRelatedPosts(postId);
+              loadRelatedPosts(data.post.id);
             } else {
               showError();
             }
