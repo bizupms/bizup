@@ -50,8 +50,8 @@
         font-weight: 600;
       }
       .badge-blue {
-        background: var(--primary-light);
-        color: var(--primary);
+        background: var(--primary);
+        color: #ffffff;
       }
       .badge-green {
         background: #d1fae5;
@@ -110,9 +110,9 @@
         border-color: var(--neutral-300);
       }
       .btn-filter.active {
-        background: var(--primary-light);
+        background: var(--primary);
         border-color: var(--primary);
-        color: var(--primary);
+        color: #ffffff;
       }
 
       .recipient-list {
@@ -133,6 +133,19 @@
       }
       .recipient-item.selected {
         background: var(--primary-light);
+      }
+      .recipient-item.selected .recipient-name {
+        color: #ffffff;
+      }
+      .recipient-item.selected .recipient-company {
+        color: rgba(255, 255, 255, 0.8);
+      }
+      .recipient-item.selected .recipient-email {
+        color: rgba(255, 255, 255, 0.65);
+      }
+      .recipient-item.selected .recipient-status {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
       }
       .recipient-item input[type="checkbox"] {
         width: 16px;
